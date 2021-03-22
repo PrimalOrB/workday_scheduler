@@ -91,6 +91,7 @@ function generateHTML( date ) {
 
             // event
         var eventText = $( '<p>' )
+            .addClass( 'event-desc' )
             .text( b );
         var event = $( '<div>' )
             .addClass( `description py-2 px-2 col ${colourSetting}` )
@@ -152,27 +153,50 @@ $( '.container' ).on( 'click', '.description', function() {
 })
 
     // Save entry
-$( '.container' ).on( 'click', '.action[data-action="save"]', function() {
+$( '.container' ).on( 'click', '.action', function() {
         // get data ID of line corresponding to time
+    var action =  $(this).data( 'action' )
+
     var lineID = $(this)
         .closest( 'li' )
         .data( 'id' );
-        // get text element
-    var textInput = $(this)
-        .closest( 'li' )
-        .find( '.form-control');
-        // get text value
-    var textVal = textInput.val().trim();
-        // create new p element and set text
-    var p = $( '<p>' )
-        .text( textVal )
-        // replace textarea with p element
-    textInput.replaceWith(p)
-
-        // find index of date in events array
-    var dateIndex = eventData.findIndex(x => x.date === displayDate);
-        // set current text to event listing
-    eventData[dateIndex].events[lineID] = textVal;
+    switch( action ) {
+        case 'save':
+                // get text element
+            var textInput = $(this)
+                .closest( 'li' )
+                .find( '.form-control');
+                //if text input is undefined (ie, the text field was not open), then break as nothing needs to be saved
+            if( !textInput.val() ) {
+                break
+            }
+                // get text value
+            var textVal = textInput.val().trim();
+                // create new p element and set text
+            var p = $( '<p>' )
+                .addClass( 'event-desc' )
+                .text( textVal )
+                // replace textarea with p element
+            textInput.replaceWith(p)
+                // find index of date in events array
+            var dateIndex = eventData.findIndex(x => x.date === displayDate);
+                // set value as text
+            eventData[dateIndex].events[lineID] = textVal;
+            break;
+        case 'delete':
+                // find p element
+            var p = $(this)
+                .closest( 'li' )
+                .find( '.event-desc' )
+                .text( '' )
+                // find index of date in events array
+            var dateIndex = eventData.findIndex(x => x.date === displayDate);
+                // set value as empty string
+            eventData[dateIndex].events[lineID] = '';
+            break;
+        default:
+            break;
+    }
 
         // stringify and set to localstorage
     var eventsStorage = JSON.stringify( eventData )
