@@ -34,17 +34,17 @@ function generateHTML() {
 
         // generate nav with back, current date, forward
     var backDiv = $( '<div>' )
-        .addClass( 'd-flex justify-content-end col-1' )
+        .addClass( 'backBtn d-flex justify-content-end col-sm-auto' )
         .html( '<i class="fas fa-chevron-left"></i>' );
     var dateDiv = $( '<div>' )
-        .addClass( 'col-1')
+        .addClass( 'dateID col-2')
         .text( displayDate );   
     var fwdDiv = $( '<div>' )
-        .addClass( 'd-flex justify-content-start col-1')
+        .addClass( 'fwdBtn d-flex justify-content-start col-sm-auto')
         .html( '<i class="fas fa-chevron-right"></i>' );
         // container for the nav items
     var navDiv = $( '<div>' )
-        .addClass( 'row d-flex justify-content-center align-items-center' )
+        .addClass( 'navDiv row d-flex justify-content-center align-items-center' )
         .append( backDiv )
         .append( dateDiv )
         .append( fwdDiv );
@@ -83,18 +83,20 @@ function generateHTML() {
             .addClass( 'description py-2 px-2 col future' )
             .append( eventText );  
         
-        // save button
+        // save / delete buttons
         var saveBton = $( '<div>' )
-            .addClass( 'saveAction px-2 py-2' )    
+            .addClass( 'action px-2 py-2' )   
+            .attr( 'data-action', 'save' ) 
             .html( '<i class="fas fa-save"></i>' );
         var deleteBtn = $( '<div>' )
-            .addClass( 'deleteAction px-2 py-2' )
+            .addClass( 'action px-2 py-2' )
+            .attr( 'data-action', 'delete' ) 
             .html( '<i class="fas fa-trash-alt"></i>' )
         var btnDiv = $( '<div>' )
-            .addClass( 'saveBtn d-flex justify-content-around align-items-center col-1' )
+            .addClass( 'btnDiv d-flex justify-content-around align-items-center col-1' )
             .append( saveBton )
             .append( deleteBtn )
-        
+   
         // row
         var li = $( '<li>' )
             .addClass( 'row' )
@@ -114,3 +116,27 @@ function generateHTML() {
 
 // run generate
 generateHTML()
+
+ // hover effects for save/delete button
+$( 'li' )
+    .find( '.action' )
+    .hover( function() {
+            // find button action
+        var action = $(this)
+            .data('action')
+            // depending whether save or delete, choose background color
+        if( action === 'save' ) {
+                action = 'bg-success'
+            } else if ( action === 'delete' ) {
+                action = 'bg-danger'
+            }
+            // find button upper div and set background
+        $(this)
+            .closest( '.btnDiv')
+            .addClass( action )
+    }, function() {
+            // remove hover classes from div hover
+        $( this )
+            .closest( '.btnDiv')
+            .removeClass( 'bg-success bg-danger' ) 
+    })      
