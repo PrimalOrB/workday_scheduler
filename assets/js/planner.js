@@ -1,23 +1,23 @@
     // Initialize with empty array
-var eventData = []
+var eventData = [];
     // If localStorage key exists, set existing data to eventData
 if( localStorage.getItem( 'workday-scheduler' ) ) {
     eventData = JSON.parse( localStorage.getItem( 'workday-scheduler') )
-} 
+} ;
 
-// global display date
+    // global display date
 var displayDate, 
     offset = 0
 
-// Initial date
+    // Initial date
 function setInitialDate() {
     var current = moment()
-    return current.format( 'MM/DD/YYYY' )
-}
+    return current
+};
 
-// Genetate Nav 
+    // Genetate Nav 
 function generateNav( date ) {
-         // generate nav with back, current date, forward
+            // generate nav with back, current date, forward
          var backDiv = $( '<div>' )
          .addClass( 'backBtn d-flex justify-content-end col-sm-auto' )
          .attr( 'data-action', '-1' )
@@ -29,62 +29,74 @@ function generateNav( date ) {
          .addClass( 'fwdBtn d-flex justify-content-start col-sm-auto')
          .attr( 'data-action', '1' )
          .html( '<i class="fas fa-chevron-right"></i>' );
-         // container for the nav items
+            // container for the nav items
      var navDiv = $( '<div>' )
          .addClass( 'navDiv row d-flex justify-content-center align-items-center' )
          .append( backDiv )
          .append( dateDiv )
          .append( fwdDiv );
-         // add to bottom of jumbotron
+            // add to bottom of jumbotron
      $( '.jumbotron' )
          .remove( navDiv )
-         .append( navDiv )  
+         .append( navDiv );
 }
 
-// Generate HTML Elements
+    // Generate HTML Elements
 function generateHTML( date ) {
         // set initial date displayed
-    displayDate = date
+    displayDate = date.format( 'MM/DD/YYYY' );
 
     $( '.dateID' )
-        .text( displayDate )
+        .text( displayDate );
 
         // list for time entries
     var list = $( '<ul> ')
-        .addClass( 'times-list')
+        .addClass( 'times-list');
    
         // get each date event for the date to display
-    var displayEvents = getEntries( displayDate )
+    var displayEvents = getEntries( displayDate );
         // if selected date does not exist, create a new "dummy" date to add to the array, and reload entries
     if( !displayEvents.length ) {
         newEmptyDate( displayDate )
         displayEvents = getEntries( displayDate )
-    }
-        // separate the events into their own variable
-    // displayEvents.length === 0 ? displayEvents : newEmptyDate( displayDate )
+    };
 
-    var dateEvents = displayEvents[0].events
+        // separate the events into their own variable
+    var dateEvents = displayEvents[0].events;
 
         // for each event entry, create li item
     $.each( dateEvents, function( a, b) {
-        // moment time set from storage entry
-        var momentTime = moment().set({'hour': a, 'minute': 0, 'second': 0}).format('h a')
+            // moment time set from storage entry
+        var momentTime = date.clone().set({'hour': a, 'minute': 0, 'second': 0})
 
-        // time
+            // check difference from now to listing time
+        var difference = moment( momentTime ).diff( setInitialDate() , 'hours')
+
+            // colourSetting variable based on value of difference
+        var colourSetting
+        if( difference < 0 ) {
+            colourSetting = 'past'
+        } else if (difference === 0) {
+            colourSetting = 'present'
+        } else {
+            colourSetting = 'future'
+        }
+
+            // time
         var timeText = $( '<p>' )
-            .text( momentTime )
+            .text( momentTime.format('h a') );
         var time = $( '<div>' )
             .addClass( 'hour d-flex justify-content-center align-items-center col-1' )
             .append( timeText );
 
-        // event
+            // event
         var eventText = $( '<p>' )
             .text( b );
         var event = $( '<div>' )
-            .addClass( 'description py-2 px-2 col future' )
+            .addClass( `description py-2 px-2 col ${colourSetting}` )
             .append( eventText );  
         
-        // save / delete buttons
+            // save / delete buttons
         var saveBton = $( '<div>' )
             .addClass( 'action px-2 py-2' )   
             .attr( 'data-action', 'save' ) 
@@ -92,54 +104,54 @@ function generateHTML( date ) {
         var deleteBtn = $( '<div>' )
             .addClass( 'action px-2 py-2' )
             .attr( 'data-action', 'delete' ) 
-            .html( '<i class="fas fa-trash-alt"></i>' )
+            .html( '<i class="fas fa-trash-alt"></i>' );
         var btnDiv = $( '<div>' )
             .addClass( 'btnDiv d-flex justify-content-around align-items-center col-1' )
             .append( saveBton )
-            .append( deleteBtn )
+            .append( deleteBtn );
    
-        // row
+            // row
         var li = $( '<li>' )
             .addClass( 'row' )
             .attr( 'data-id', a )
             .append( time )
             .append( event )
-            .append( btnDiv )
+            .append( btnDiv );
 
-        // append row to list    
-        list.append( li )    
+            // append row to list    
+        list.append( li );   
     })    
 
         // add list to container
     $( '.container' )
         .html( '' )
-        .append( list )
+        .append( list );
 }
 
-// Change dates
+    // Change dates
 function changeDate() {
         // set date as initial date, plus or minus offset value in days
-    displayDate = moment( setInitialDate() ).add( offset, 'd')
-    generateHTML( displayDate.format( 'MM/DD/YYYY') )
+    displayDate = moment( setInitialDate() ).add( offset, 'd');
+    generateHTML( displayDate );
 }
 
-// Get entries by date 
+    // Get entries by date 
 function getEntries( date ) {
     var output = $.grep( eventData, function( obj ) {
         var dateData = obj.date == date
         return dateData
     })
     return output
-}
+};
 
-// listen to date forward / back buttons
+    // listen to date forward / back buttons
 $( '.jumbotron' ).on( 'click', '.backBtn, .fwdBtn', function () {
     var value = $(this).data('action') 
     offset = offset + value
     changeDate( offset )
-})
+});
 
-// create new array entry
+    // create new array entry
 function newEmptyDate( input) {
     var blank = {date: input,     events: {
         9: '',
@@ -153,18 +165,18 @@ function newEmptyDate( input) {
         17: '',
         }
     }
-    // push new object to array
+        // push new object to array
     eventData.push( blank )
-    // stringify and set to storage
+        // stringify and set to storage
     var eventsStorage = JSON.stringify( eventData )
     localStorage.setItem( 'workday-scheduler', eventsStorage)
-}
+};
 
-// run generate
+    // run generate
 generateNav( setInitialDate() )
 generateHTML( setInitialDate() )
 
- // hover effects for save/delete button
+    // hover effects for save/delete button
 $( 'li' )
     .find( '.action' )
     .hover( function() {
@@ -186,4 +198,4 @@ $( 'li' )
         $( this )
             .closest( '.btnDiv')
             .removeClass( 'bg-success bg-danger' ) 
-    })      
+    });    
