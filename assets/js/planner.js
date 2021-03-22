@@ -1,67 +1,68 @@
-// Sample Data Array
+    // Initialize with empty array
+var eventData = []
+    // If localStorage key exists, set existing data to eventData
+if( localStorage.getItem( 'workday-scheduler' ) ) {
+    eventData = JSON.parse( localStorage.getItem( 'workday-scheduler') )
+} 
 
-var eventData = [
-    {date: 'today',     events: {
-        9: 't9',
-        10: '',
-        11: '',
-        12: 't12',
-        13: '',
-        14: '',
-        15: 't15',
-        16: '',
-        17: '',
-        }
-    },
-    {date: 'tomorrow',     events: {
-        9: '',
-        10: 't10',
-        11: '',
-        12: '',
-        13: 't13',
-        14: '',
-        15: '',
-        16: 't16',
-        17: '',
-        }
-    }
-]
+// global display date
+var displayDate, 
+    offset = 0
+
+// Initial date
+function setInitialDate() {
+    var current = moment()
+    return current.format( 'MM/DD/YYYY' )
+}
+
+// Genetate Nav 
+function generateNav( date ) {
+         // generate nav with back, current date, forward
+         var backDiv = $( '<div>' )
+         .addClass( 'backBtn d-flex justify-content-end col-sm-auto' )
+         .attr( 'data-action', '-1' )
+         .html( '<i class="fas fa-chevron-left"></i>' );
+     var dateDiv = $( '<div>' )
+         .addClass( 'dateID col-2')
+         .text( date );   
+     var fwdDiv = $( '<div>' )
+         .addClass( 'fwdBtn d-flex justify-content-start col-sm-auto')
+         .attr( 'data-action', '1' )
+         .html( '<i class="fas fa-chevron-right"></i>' );
+         // container for the nav items
+     var navDiv = $( '<div>' )
+         .addClass( 'navDiv row d-flex justify-content-center align-items-center' )
+         .append( backDiv )
+         .append( dateDiv )
+         .append( fwdDiv );
+         // add to bottom of jumbotron
+     $( '.jumbotron' )
+         .remove( navDiv )
+         .append( navDiv )  
+}
 
 // Generate HTML Elements
-function generateHTML() {
-        // date to display
-    var displayDate = 'today'
+function generateHTML( date ) {
+        // set initial date displayed
+    displayDate = date
 
-        // generate nav with back, current date, forward
-    var backDiv = $( '<div>' )
-        .addClass( 'backBtn d-flex justify-content-end col-sm-auto' )
-        .html( '<i class="fas fa-chevron-left"></i>' );
-    var dateDiv = $( '<div>' )
-        .addClass( 'dateID col-2')
-        .text( displayDate );   
-    var fwdDiv = $( '<div>' )
-        .addClass( 'fwdBtn d-flex justify-content-start col-sm-auto')
-        .html( '<i class="fas fa-chevron-right"></i>' );
-        // container for the nav items
-    var navDiv = $( '<div>' )
-        .addClass( 'navDiv row d-flex justify-content-center align-items-center' )
-        .append( backDiv )
-        .append( dateDiv )
-        .append( fwdDiv );
-        // add to bottom of jumbotron
-    $( '.jumbotron' )
-        .append( navDiv )    
+    $( '.dateID' )
+        .text( displayDate )
 
         // list for time entries
     var list = $( '<ul> ')
         .addClass( 'times-list')
    
         // get each date event for the date to display
-    var displayEvents = $.grep( eventData, function( obj ) {
-        var dateData = obj.date == displayDate
-        return dateData
-    })
+    var displayEvents = getEntries( displayDate )
+        // if selected date does not exist, create a new "dummy" date to add to the array, and reload entries
+    if( !displayEvents.length ) {
+        newEmptyDate( displayDate )
+        displayEvents = getEntries( displayDate )
+    }
         // separate the events into their own variable
+    // displayEvents.length === 0 ? displayEvents : newEmptyDate( displayDate )
+
     var dateEvents = displayEvents[0].events
 
         // for each event entry, create li item
@@ -111,11 +112,57 @@ function generateHTML() {
 
         // add list to container
     $( '.container' )
-    .append( list )
+        .html( '' )
+        .append( list )
+}
+
+// Change dates
+function changeDate() {
+        // set date as initial date, plus or minus offset value in days
+    displayDate = moment( setInitialDate() ).add( offset, 'd')
+    generateHTML( displayDate.format( 'MM/DD/YYYY') )
+}
+
+// Get entries by date 
+function getEntries( date ) {
+    var output = $.grep( eventData, function( obj ) {
+        var dateData = obj.date == date
+        return dateData
+    })
+    return output
+}
+
+// listen to date forward / back buttons
+$( '.jumbotron' ).on( 'click', '.backBtn, .fwdBtn', function () {
+    var value = $(this).data('action') 
+    offset = offset + value
+    changeDate( offset )
+})
+
+// create new array entry
+function newEmptyDate( input) {
+    var blank = {date: input,     events: {
+        9: '',
+        10: '',
+        11: '',
+        12: '',
+        13: '',
+        14: '',
+        15: '',
+        16: '',
+        17: '',
+        }
+    }
+    // push new object to array
+    eventData.push( blank )
+    // stringify and set to storage
+    var eventsStorage = JSON.stringify( eventData )
+    localStorage.setItem( 'workday-scheduler', eventsStorage)
 }
 
 // run generate
-generateHTML()
+generateNav( setInitialDate() )
+generateHTML( setInitialDate() )
 
  // hover effects for save/delete button
 $( 'li' )
