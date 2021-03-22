@@ -136,16 +136,48 @@ function changeDate() {
 }
 
     // Edit entry
-var entries = $( '.container' ).on( 'click', '.description', function() {
+$( '.container' ).on( 'click', '.description', function() {
+        // get current text
     var text = $(this)
         .text()
         .trim();
-    var textInput = $('<textarea>')
+        // create textarea and add existing text
+    var textInput = $( '<textarea>' )
         .addClass('form-control')
         .val(text)
+        // set html of area as textInput
     $(this).html(textInput) 
+        // focus on new textInput
     textInput.trigger('focus'); 
 })
+
+    // Save entry
+$( '.container' ).on( 'click', '.action[data-action="save"]', function() {
+        // get data ID of line corresponding to time
+    var lineID = $(this)
+        .closest( 'li' )
+        .data( 'id' );
+        // get text element
+    var textInput = $(this)
+        .closest( 'li' )
+        .find( '.form-control');
+        // get text value
+    var textVal = textInput.val().trim();
+        // create new p element and set text
+    var p = $( '<p>' )
+        .text( textVal )
+        // replace textarea with p element
+    textInput.replaceWith(p)
+
+        // find index of date in events array
+    var dateIndex = eventData.findIndex(x => x.date === displayDate);
+        // set current text to event listing
+    eventData[dateIndex].events[lineID] = textVal;
+
+        // stringify and set to localstorage
+    var eventsStorage = JSON.stringify( eventData )
+    localStorage.setItem( 'workday-scheduler', eventsStorage)
+} )
 
     // Get entries by date 
 function getEntries( date ) {
