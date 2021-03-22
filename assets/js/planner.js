@@ -127,6 +127,9 @@ function generateHTML( date ) {
     $( '.container' )
         .html( '' )
         .append( list );
+
+        // add listeners for hover effects
+    loadHoverListener()
 }
 
     // Change dates
@@ -245,6 +248,7 @@ generateNav( setInitialDate() )
 generateHTML( setInitialDate() )
 
     // hover effects for save/delete button
+function loadHoverListener() {    
 $( 'li' )
     .find( '.action' )
     .hover( function() {
@@ -267,3 +271,4 @@ $( 'li' )
             .closest( '.btnDiv')
             .removeClass( 'bg-success bg-danger' ) 
     });    
+}
