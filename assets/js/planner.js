@@ -135,6 +135,18 @@ function changeDate() {
     generateHTML( displayDate );
 }
 
+    // Edit entry
+var entries = $( '.container' ).on( 'click', '.description', function() {
+    var text = $(this)
+        .text()
+        .trim();
+    var textInput = $('<textarea>')
+        .addClass('form-control')
+        .val(text)
+    $(this).html(textInput) 
+    textInput.trigger('focus'); 
+})
+
     // Get entries by date 
 function getEntries( date ) {
     var output = $.grep( eventData, function( obj ) {
