@@ -138,7 +138,17 @@ function generateHTML( date ) {
 function changeDate() {
         // set date as initial date, plus or minus offset value in days
     displayDate = moment( setInitialDate() ).add( offset, 'd');
-    generateHTML( displayDate );
+    checkUnsaved( displayDate )
+}
+
+    // check for unsaved data
+function checkUnsaved( date ) {
+    var openForms = $( '.form-control' )
+    if( openForms.length !== 0 ) {
+        confirm('Save open entries before changing page')
+    } else {
+        generateHTML( date );
+    }
 }
 
     // Edit entry
@@ -274,3 +284,16 @@ $( 'li' )
             .removeClass( 'bg-success bg-danger' ) 
     });    
 }
+
+    // remove conditional time formatting and reapply with new time
+function auditTime() {
+        // strip off time based classes
+    var el = $('.description')
+        .removeClass( 'future past present')
+        // run changeDate function to reapply based on current time
+    changeDate()
+}
+    // set interval to run update every ten minutes
+setInterval( function() {
+        auditTime()
+  }, ( 1000 * 60 ) * 10 );
