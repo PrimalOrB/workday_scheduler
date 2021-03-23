@@ -69,8 +69,10 @@ function generateHTML( date ) {
             // moment time set from storage entry
         var momentTime = date.clone().set({'hour': a, 'minute': 0, 'second': 0})
 
-            // check difference from now to listing time
-        var difference = moment( momentTime ).diff( setInitialDate() , 'hours')
+            // create compare time of current, and normalized to the h:00:00
+        var compare = setInitialDate().set({ 'minute': 0, 'second': 0 })
+            // check difference from compare time to listing time
+        var difference = moment( momentTime ).diff( compare , 'minute')
 
             // colourSetting variable based on value of difference
         var colourSetting
