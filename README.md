@@ -10,8 +10,8 @@ A daily calendar for your work day, allowing you to save and delete tasks for ho
 ## Built With
 
 - HTML
-- jQuery
-- Bootstrap CSS
+- [jQuery](https://jquery.com/)
+- [Bootstrap CSS](https://getbootstrap.com/)
 - CSS
 - [Moment.js](https://momentjs.com/)
 
