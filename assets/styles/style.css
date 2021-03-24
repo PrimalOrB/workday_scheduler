@@ -1,10 +1,10 @@
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 16px;
   line-height: 1;
 }
 
-textarea{
+textarea {
   background: transparent;
   border: none;
   resize: none;
@@ -22,11 +22,12 @@ textarea{
   padding-bottom: 1rem;
 }
 
-.description{
+.description {
   white-space: pre-wrap;
+  box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.3);
 }
 
-.time-block{
+.time-block {
   text-align: center;
   border-radius: 15px;
 }
@@ -34,13 +35,16 @@ textarea{
 .row {
   white-space: pre-wrap;
   height: 80px;
-  border-top: 1px solid white;;
+  border-top: 1px solid white;
 }
 
 .hour {
-  background-color: #ffffff;
+  background-color: #d3d3d3;
   color: #000000;
-  border-top: 1px dashed #000000;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  margin-right: 0.25em;
+  box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.3);
 }
 
 .past {
@@ -59,49 +63,73 @@ textarea{
 }
 
 .btnDiv {
-  border-left: 1px solid black;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
-  background-color: hsla( 191deg, 95%, 43%, 1 );
+  background-color: hsla(191deg, 95%, 43%, 1);
   color: white;
   transition: 0.25s ease;
+  margin-left: 0.25em;
+  box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.3);
 }
 
+/* size of icons */
 .btnDiv i {
   font-size: 1.3rem;
 }
-
+/* hover change of div for save/delete buttons */
 .btnDiv div:hover {
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.75);
+}
+/* active change of div for save/delete buttons */
+.btnDiv div:active {
   color: yellow;
 }
-
-.navDiv, .backBtn, .fwdBtn, .dateID {
+/* padding and font size for nav + nav buttons */
+.navDiv,
+.backBtn,
+.fwdBtn,
+.dateID {
   padding: 1rem 1rem;
   font-size: 1.3rem;
 }
-
+/* color and shadow for nav buttons */
 .dateID,
 .backBtn,
 .fwdBtn {
   background-color: #d3d3d3;
   transition: 0.25s ease;
-  border: 1px solid black;
+  box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.3);
 }
-
+/* margin on sides of date in nav */
 .dateID {
-  margin: 0 0.1em
+  margin: 0 0.25em;
 }
-
+/* back date button */
 .backBtn {
   border-radius: 15px 0 0 15px;
 }
-
+/* forward date button */
 .fwdBtn {
   border-radius: 0 15px 15px 0;
 }
-
+/* hover state for button */
 .backBtn:hover,
 .fwdBtn:hover {
   background-color: #77dd77;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.75);
+}
+
+.backBtn:active,
+.fwdBtn:active {
+  background-color: yellow;
+}
+
+li {
+  opacity: 0;
+  margin: 0.25em 0;
+}
+
+p {
+  margin: 0;
 }

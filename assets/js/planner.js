@@ -96,20 +96,20 @@ function generateHTML( date ) {
             .addClass( 'event-desc' )
             .text( b );
         var event = $( '<div>' )
-            .addClass( `description py-2 px-2 col ${colourSetting}` )
+            .addClass( `description d-flex align-items-center py-2 px-2 col ${colourSetting}` )
             .append( eventText );  
         
             // save / delete buttons
         var saveBton = $( '<div>' )
-            .addClass( 'action px-2 py-2' )   
+            .addClass( 'action px-2 py-2 col-6 no-gutters' )   
             .attr( 'data-action', 'save' ) 
             .html( '<i class="fas fa-save"></i>' );
         var deleteBtn = $( '<div>' )
-            .addClass( 'action px-2 py-2' )
+            .addClass( 'action px-2 py-2 col-6  no-gutters' )
             .attr( 'data-action', 'delete' ) 
             .html( '<i class="fas fa-trash-alt"></i>' );
         var btnDiv = $( '<div>' )
-            .addClass( 'btnDiv d-flex justify-content-around align-items-center col-1' )
+            .addClass( 'btnDiv d-flex justify-content-around align-items-center col-1 row' )
             .append( saveBton )
             .append( deleteBtn );
    
@@ -129,6 +129,11 @@ function generateHTML( date ) {
     $( '.container' )
         .html( '' )
         .append( list );
+
+        // animate fade in of li elements
+    $("li").each(function(i) {
+        $(this).delay(100*i).animate({opacity: [ 1, "swing"]}, 200);
+    });    
 
         // add listeners for hover effects
     loadHoverListener()
@@ -181,8 +186,10 @@ $( '.container' ).on( 'click', '.action', function() {
             var textInput = $(this)
                 .closest( 'li' )
                 .find( '.form-control');
-                //if text input is undefined (ie, the text field was not open), then break as nothing needs to be saved
-            if( !textInput.val() ) {
+                // check if there is a textInput element by reading length of jquery search
+            var textInputCheck = textInput.length
+                //if text input is non-existent (ie, the text field was not open), then break as nothing needs to be saved
+            if( !textInput.length ) {
                 break
             }
                 // get text value
@@ -288,7 +295,7 @@ $( 'li' )
     // remove conditional time formatting and reapply with new time
 function auditTime() {
         // strip off time based classes
-    var el = $('.description')
+    $('.description')
         .removeClass( 'future past present')
         // run changeDate function to reapply based on current time
     changeDate()
