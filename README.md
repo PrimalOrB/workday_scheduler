@@ -38,4 +38,5 @@ https://primalorb.github.io/workday_scheduler/
 
 ## Storage Data Structure
 ![Image](https://user-images.githubusercontent.com/69044956/111890518-6f5ca200-89c0-11eb-96f2-2085df9fca20.png)
-
+  * There is a separate object created for each data entry
+  * Events are sub-objects, referencing their 24h value as the entry key
