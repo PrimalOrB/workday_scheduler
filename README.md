@@ -35,3 +35,7 @@ https://primalorb.github.io/workday_scheduler/
   * Line items will update to past / current / future status by changing color
   * Time is referenced using Moment.js
   * Formatting is refreshed automatically every 20 minutes, so you can leave this window open all the time and still have up to date formatting
+
+## Storage Data Structure
+![Image](https://user-images.githubusercontent.com/69044956/111890518-6f5ca200-89c0-11eb-96f2-2085df9fca20.png)
+
